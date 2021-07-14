@@ -8,7 +8,7 @@ import net.dv8tion.jda.api.entities.VoiceChannel;
 
 import javax.security.auth.login.LoginException;
 
-public class Main {
+public static class Main {
     private static JDA bot;
     public static boolean bracketInProgress = false;
     public static Guild guild;
