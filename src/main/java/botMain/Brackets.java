@@ -25,7 +25,16 @@ public class Brackets {
 
     public HashMap<Integer, String> playerNumToId = new HashMap<>();
 
-    public final Map<Integer, Integer> feeding = Map.of(1, 5, 2, 5, 3, 6, 4, 6, 6, 7, 5, 7);
+    public final Map<Integer, Integer> feeding = new HashMap<>();
+
+    {
+        feeding.put(1, 5);
+        feeding.put(2, 5);
+        feeding.put(3, 6);
+        feeding.put(4, 6);
+        feeding.put(5, 7);
+        feeding.put(6, 7);
+    }
 
 
     public String[] good = {"361512261241536522", "148707908748574720", "829088868817043467", "284848470056108042", "336540382785437698"};
