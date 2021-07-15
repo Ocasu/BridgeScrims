@@ -1,1 +1,1 @@
-Worker: java -Xmx100m src/main/java/botMain.Main
+Worker: java -Xmx100m -jar target/bot-1.0-SNAPSHOT.jar
