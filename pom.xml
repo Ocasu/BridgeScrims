@@ -32,9 +32,8 @@
             <programs>
                 <program>
                     <mainClass>Main</mainClass>
-                    <name>mai</name>
+                    <name>main</name>
                 </program>
-
             </programs>
           </configuration>
           <executions>

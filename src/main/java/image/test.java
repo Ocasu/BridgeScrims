@@ -1,6 +1,5 @@
 package image;
 
-import org.w3c.dom.css.RGBColor;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
