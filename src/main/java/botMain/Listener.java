@@ -112,6 +112,22 @@ public class Listener extends ListenerAdapter {
                 g.forfeit(Objects.requireNonNull(event.getMember()).getUser().getId());
             }
 
+            if(message.startsWith("!test-toggle") && event.getMember().getRoles().contains(Main.getBot().getRoleById("862151580303884308"))){
+                Main.testingMode = !Main.testingMode;
+                EmbedBuilder g = new EmbedBuilder();
+                g.setTitle("Test mode: " + Main.testingMode);
+                g.addField(":bust_in_silhouette: User: ", event.getMember().getUser().getAsTag(), false);
+                g.addField("Has admin:" , ":ballot_box_with_check:", true);
+                Utils.print(g);
+            }else if(message.startsWith("!test-toggle")){
+                EmbedBuilder g = new EmbedBuilder();
+                g.setTitle("Attempted toggle");
+                g.addField(":bust_in_silhouette: User: ", event.getMember().getUser().getAsTag(), false);
+                g.addField("Has admin:" , ":x:", true);
+//                botMain.Main.getBot().getEmotesByName("DC_cross", false).get(0);
+                Utils.print(g);
+            }
+
             if(message.startsWith("!restart") && event.getMember().getRoles().contains(Main.getBot().getRoleById("862151580303884308"))){
                 Main.bracketInProgress = false;
                 Main.brackets = new Brackets(Main.getBot(), Main.getBot().getVoiceChannelById(Main.voiceChannelId));
