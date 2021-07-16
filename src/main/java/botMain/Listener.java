@@ -131,6 +131,8 @@ public class Listener extends ListenerAdapter {
             if(message.startsWith("!restart") && event.getMember().getRoles().contains(Main.getBot().getRoleById("862151580303884308"))){
                 Main.bracketInProgress = false;
                 Main.brackets = new Brackets(Main.getBot(), Main.getBot().getVoiceChannelById(Main.voiceChannelId));
+                voiceChannelContains = new HashSet<>();
+
                 EmbedBuilder g = new EmbedBuilder();
                 g.setTitle("Restarting bullet bot");
                 g.addField(":bust_in_silhouette: User: ", event.getMember().getUser().getAsTag(), false);
