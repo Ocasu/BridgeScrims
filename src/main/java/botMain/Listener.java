@@ -407,7 +407,7 @@ public class Listener extends ListenerAdapter {
                     g.getScoringReactions()[0] = 0;
                     g.getScoringReactions()[1] = 0;
                     message.reply("Scoring disagreement, try again").queue();
-                    message.clearReactions().complete();
+                    message.clearReactions().queue();
 
                     message.addReaction("\uD83C\uDD70️").queue();
                     message.addReaction("\uD83C\uDD71").queue();
