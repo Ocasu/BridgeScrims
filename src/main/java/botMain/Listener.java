@@ -27,11 +27,23 @@ public class Listener extends ListenerAdapter {
         System.out.println(event.getJDA().getSelfUser().getName() + " is online!");
     }
 
+    private boolean isAdmin(Member member) {
+        return member.getRoles().contains(Main.getBot().getRoleById("862151580303884308"));
+    }
+
+    private boolean inTourney(User user) {
+        return getTourney().getCurrentGames().containsKey(user.getId());
+    }
 
     @Override
     public void onGuildMessageReceived(@Nonnull GuildMessageReceivedEvent event) {
-        String message = event.getMessage().getContentRaw();
-        if (message.startsWith("!")) {
+        try {
+
+            String message = event.getMessage().getContentRaw();
+            if (!event.getChannel().getId().equals(Main.botChannelId) || !message.startsWith("!")) {
+                return;
+            }
+
             User author = event.getMessage().getAuthor();
 //            if(System.currentTimeMillis() >= botMain.Main.last + 4000){
 //                botMain.Main.last = System.currentTimeMillis();
@@ -39,96 +51,123 @@ public class Listener extends ListenerAdapter {
 //                botMain.Utils.print("Wait some more seconds");
 //                return;
 //            }
-            if (message.startsWith("!start") && !Main.bracketInProgress) {
+            if (message.startsWith("!start")) {
+
+                if (Main.bracketInProgress) {
+                    Utils.print("A tournament is already in progress");
+                    return;
+                }
 
                 if (Main.testingMode) {
 
-                    String[] testingIds = {"728669301199995035", "86491218799775744", "96491218799775744", "927218070827565088", "999999999999999996", "999999999999999991", "999999999999999995", "999999999999999994"};
+                    String[] testingIds = {"728669301199995035", "86491218799775744", "96491218799775744",
+                            "927218070827565088", "999999999999999996", "999999999999999991", "999999999999999995",
+                            "999999999999999994"};
 //                    String[] testingIds = {"728669301199995035", "690244520423850017", "86491218799775744", "327218070827565088", "999999999999999996", "999999999999999991", "999999999999999995", "999999999999999994"};
                     //ocasu, tphere, shmill, web
 
                     voiceChannelContains.addAll(Arrays.asList(testingIds));
-                    try {
-                        Main.brackets.CreateStartBrackets(voiceChannelContains);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    Main.brackets.CreateStartBrackets(voiceChannelContains);
                     Main.bracketInProgress = true;
-
-
-                } else {
-
-
-                    VoiceChannel g = Main.getBot().getVoiceChannelById(Main.voiceChannelId);
-                    List<Member> gg = g.getMembers();
-                    for (Member h : gg) voiceChannelContains.add(h.getId());
-
-                    if (voiceChannelContains.size() >= 8 && voiceChannelContains.contains(author.getId())) {
-                        try {
-                            Main.brackets.CreateStartBrackets(voiceChannelContains);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        Main.bracketInProgress = true;
-                    } else if (voiceChannelContains.size() < 8)
-                        Utils.print("Not enough people in Bullet Tourney vc to begin");
-                    else Utils.print(event.getAuthor().getName() + " is not in Bullet Tourney vc");
-
+                    return;
                 }
-            } else if (Main.bracketInProgress && message.startsWith("!start")) {
-                Utils.print("A tournament is already in progress");
+
+                VoiceChannel g = Main.getBot().getVoiceChannelById(Main.voiceChannelId);
+                List<Member> gg = g.getMembers();
+                for (Member h : gg) voiceChannelContains.add(h.getId());
+
+                if (!voiceChannelContains.contains(author.getId())) {
+                    Utils.print(event.getAuthor().getName() + " is not in Bullet Tourney vc");
+                    return;
+                }
+
+                if (voiceChannelContains.size() < 8) {
+                    Utils.print("Not enough people in Bullet Tourney vc to begin [" + voiceChannelContains.size()
+                            + "/8 players joined]");
+                    return;
+                }
+
+                Main.brackets.CreateStartBrackets(voiceChannelContains);
+                Main.bracketInProgress = true;
+                return;
             }
 
-            if(message.startsWith("!status") && Main.bracketInProgress ){
+            if (message.startsWith("!status") && Main.bracketInProgress && isAdmin(event.getMember())) {
                 Utils.print(getTourney().getCurrentGames().toString());
                 Utils.print(Arrays.toString(getTourney().getAllGames()));
+                return;
             }
 
-//            if(message.startsWith("!reload") && Main.bracketInProgress){
-//                try {
-//                    addPlayer.reload();
-//                    sendBracketsUpdate.update();
-//                    System.out.println("reloading");
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            if (message.startsWith("!score")) {
 
-            if (message.startsWith("!score") && Main.bracketInProgress && getTourney().getCurrentGames().containsKey(event.getAuthor().getId())) {
+                if (!inTourney(event.getAuthor())) {
+                    Utils.print("You have to be in a tournament to use this command");
+                    return;
+                }
+
+                if (!Main.bracketInProgress) {
+                    Utils.print("A tournament is not in progress yet");
+                    return;
+                }
 
                 int gameId = getTourney().getCurrentGames().get(event.getAuthor().getId());
                 if (getTourney().getGame(gameId).getScoringMessageId() == null) {
                     getTourney().getGame(gameId).score(Main.brackets.bulletTourney);
                 } else {
                     Utils.print("This game is already being scored");
-
                 }
 
+                return;
             }
 
-            if(message.startsWith("!forfeit") && Main.bracketInProgress){
+            if (message.startsWith("!forfeit")) {
+                if (!Main.bracketInProgress) {
+                    Utils.print("A tournament is not in progress yet");
+                    return;
+                }
+
                 int f = Main.brackets.bulletTourney.getCurrentGames().get(Objects.requireNonNull(event.getMember()).getUser().getId());
                 Game g = Main.brackets.bulletTourney.getGame(f);
                 g.forfeit(Objects.requireNonNull(event.getMember()).getUser().getId());
+                return;
             }
 
-            if(message.startsWith("!test-toggle") && event.getMember().getRoles().contains(Main.getBot().getRoleById("862151580303884308"))){
+            if (message.startsWith("!test-toggle")) {
+
+                if (!isAdmin(Objects.requireNonNull(event.getMember()))) {
+                    EmbedBuilder g = new EmbedBuilder();
+                    g.setTitle("Attempted toggle");
+                    g.addField(":bust_in_silhouette: User: ", event.getMember().getUser().getAsTag(), false);
+                    g.addField("Has admin:", ":x:", true);
+                    Utils.print(g);
+                    return;
+                }
+
                 Main.testingMode = !Main.testingMode;
                 EmbedBuilder g = new EmbedBuilder();
                 g.setTitle("Test mode: " + Main.testingMode);
                 g.addField(":bust_in_silhouette: User: ", event.getMember().getUser().getAsTag(), false);
-                g.addField("Has admin:" , ":ballot_box_with_check:", true);
+                g.addField("Has admin:", ":ballot_box_with_check:", true);
                 Utils.print(g);
-            }else if(message.startsWith("!test-toggle")){
-                EmbedBuilder g = new EmbedBuilder();
-                g.setTitle("Attempted toggle");
-                g.addField(":bust_in_silhouette: User: ", event.getMember().getUser().getAsTag(), false);
-                g.addField("Has admin:" , ":x:", true);
-//                botMain.Main.getBot().getEmotesByName("DC_cross", false).get(0);
-                Utils.print(g);
+
+                if (Main.testingMode) Main.getBot().getPresence().setActivity(Activity.playing("Testing mode"));
+                else Main.getBot().getPresence().setActivity(Activity.playing("Version -1.0.0"));
+
+                return;
             }
 
-            if(message.startsWith("!restart") && event.getMember().getRoles().contains(Main.getBot().getRoleById("862151580303884308"))){
+
+            if (message.startsWith("!restart")) {
+
+                if (!isAdmin(event.getMember())) {
+                    EmbedBuilder g = new EmbedBuilder();
+                    g.setTitle("Attempted restart");
+                    g.addField(":bust_in_silhouette: User: ", event.getMember().getUser().getAsTag(), false);
+                    g.addField("Has admin:", ":x:", true);
+                    Utils.print(g);
+                    return;
+                }
+
                 Main.bracketInProgress = false;
                 Main.brackets = new Brackets(Main.getBot(), Main.getBot().getVoiceChannelById(Main.voiceChannelId));
                 voiceChannelContains = new HashSet<>();
@@ -136,48 +175,54 @@ public class Listener extends ListenerAdapter {
                 EmbedBuilder g = new EmbedBuilder();
                 g.setTitle("Restarting bullet bot");
                 g.addField(":bust_in_silhouette: User: ", event.getMember().getUser().getAsTag(), false);
-                g.addField("Has admin:" , ":ballot_box_with_check:", true);
+                g.addField("Has admin:", ":ballot_box_with_check:", true);
                 Utils.print(g);
-            }else if(message.startsWith("!restart")){
-                EmbedBuilder g = new EmbedBuilder();
-                g.setTitle("Attempted restart");
-                g.addField(":bust_in_silhouette: User: ", event.getMember().getUser().getAsTag(), false);
-                g.addField("Has admin:" , ":x:", true);
-//                botMain.Main.getBot().getEmotesByName("DC_cross", false).get(0);
-                Utils.print(g);
+                return;
             }
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     private Tournament getTourney() {
         return Main.brackets.bulletTourney;
     }
 
-
-    //forfiet
+    //forfeit
     @Override
     public void onGuildVoiceLeave(@Nonnull GuildVoiceLeaveEvent event) {
-        super.onGuildVoiceLeave(event);
-        for(int i = 0;i<7;i++){
-            if(Main.vcs[i] == event.getChannelLeft()) break;
+        try {
+            super.onGuildVoiceLeave(event);
+            boolean a = false;
+            for (int i = 0; i < 7; i++) {
+                if (Main.vcs[i].getId().equals(event.getChannelLeft().getId())) {
+                    a = true;
+                    break;
+                }
+            }
+            if (!a) return;
+            Integer f = Main.brackets.bulletTourney.getCurrentGames().get(event.getMember().getUser().getId());
+            if (f == null) {
+                return;
+            }
+
+            Game g = Main.brackets.bulletTourney.getGame(f);
+            g.forfeit(event);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        int f = Main.brackets.bulletTourney.getCurrentGames().get(event.getMember().getUser().getId());
-        Game g = Main.brackets.bulletTourney.getGame(f);
-        g.forfeit(event);
     }
 
     @Override
     public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
         super.onGuildMessageReactionRemove(event);
-        if (getTourney().getCurrentScoringMessageIds().containsKey(event.getMessageId())){
+        if (getTourney().getCurrentScoringMessageIds().containsKey(event.getMessageId())) {
 
             Game g = getTourney().getGame(getTourney().getCurrentGames().get(event.getUserId()));
-            if(event.getReactionEmote().getEmoji().startsWith("\uD83C\uDD70")){
+            if (event.getReactionEmote().getEmoji().startsWith("\uD83C\uDD70")) {
                 g.getScoringReactions()[0]--;
                 System.out.println("removed1");
-            }else if(event.getReactionEmote().getEmoji().startsWith("\uD83C\uDD71")){
+            } else if (event.getReactionEmote().getEmoji().startsWith("\uD83C\uDD71")) {
                 g.getScoringReactions()[1]--;
                 System.out.println("removed2");
 
@@ -187,14 +232,18 @@ public class Listener extends ListenerAdapter {
         }
     }
 
-
     @Override
     public void onGuildMessageReactionAdd(@Nonnull GuildMessageReactionAddEvent event) {
 
         super.onGuildMessageReactionAdd(event);
 
-        if (getTourney().getCurrentScoringMessageIds().containsKey(event.getMessageId())
-                && !event.getUser().equals(event.getJDA().getSelfUser())) {
+        try {
+
+            if (!event.getReactionEmote().isEmoji()
+                    || !getTourney().getCurrentScoringMessageIds().containsKey(event.getMessageId())
+                    || event.getUser().equals(event.getJDA().getSelfUser())) {
+                return;
+            }
 
             int gameId = getTourney().getCurrentScoringMessageIds().get(event.getMessageId());
             Game g = getTourney().getGame(gameId);
@@ -206,15 +255,73 @@ public class Listener extends ListenerAdapter {
                 return;
             }
 
-
             System.out.println(event.getReactionEmote().getEmoji());
+            int playerIndex;
+            if (event.getReactionEmote().getEmoji().startsWith("\uD83C\uDD70️")) playerIndex = 0;
+            else if (event.getReactionEmote().getEmoji().startsWith("\uD83C\uDD71")) playerIndex = 1;
+            else return;
+
+            int otherPlayerIndex = playerIndex == 0 ? 1 : 0;
+            String playerDisplay = playerIndex == 0 ? "1" : "2";
+            String otherPlayerDisplay = playerIndex == 0 ? "2" : "1";
+            int winner = playerIndex == 0 ? 1 : 2;
+            String winnerPlayer = playerIndex == 0 ? g.getPlayer1() : g.getPlayer2();
+            String otherPlayer = playerIndex == 0 ? g.getPlayer2() : g.getPlayer1();
+
+            g.react(playerIndex);
+            Utils.print("A player of this bracket claims player " + playerDisplay + " has won");
+            System.out.println(Arrays.toString(g.getScoringReactions()));
+
+            if (g.getScoringReactions()[playerIndex] == (Main.testingMode ? 2 : 2) &&
+                    g.getScoringReactions()[otherPlayerIndex] == 0) {
+
+                //winner
+                EmbedBuilder h = new EmbedBuilder();
+                h.setTitle("Winner is Player " + playerDisplay + "!");
+                h.setColor(Color.PINK);
+
+                g.markDone(h, winner);
+
+                getTourney().getCurrentScoringMessageIds().remove(event.getMessageId());
+                getTourney().getCurrentGames().remove(winnerPlayer);
+                getTourney().getCurrentGames().remove(otherPlayer);
+                if (g.getNumberId() == 6) { //is it game final
+                    EmbedBuilder hh = new EmbedBuilder();
+                    hh.setTitle("Winner is Player " + playerDisplay + "!");
+                    getTourney().setWinner(winnerPlayer);
+                    hh.setColor(Color.PINK);
+                    getTourney().setDone();
+                    Main.bracketInProgress = false;
+                    Utils.print(hh);
+                } else {
+                    int feeding = Main.brackets.feeding.get(g.getNumberId() + 1);
+
+                    if (!Main.testingMode) {
+                        Utils.move(Main.getBot().getUserById(otherPlayer), Main.brackets.getWaitingRoom());
+                        Utils.move(Main.getBot().getUserById(winnerPlayer), Main.vcs[feeding - 1]);
+                    } else {
+
+                        Utils.print("Moving player " + otherPlayerDisplay + " to waiting room");
+                        Utils.print("Moving player " + playerDisplay + " to vc #" + feeding);
+                    }
+
+                    getTourney().makeGame(4 + (feeding - 5));
+                    Game next = getTourney().getGame(4 + (feeding - 5));
+                    next.addPlayer(g, winner, feeding);
+                }
+
+                //winner end
+            }
+
+            /*
             if (event.getReactionEmote().getEmoji().startsWith("\uD83C\uDD70️")) {
 
                 g.react(0);
                 Utils.print("A player of this bracket claims player 1 has won");
                 System.out.println(Arrays.toString(g.getScoringReactions()));
 
-                if (g.getScoringReactions()[0] == (Main.testingMode ? 2 : 2)) {
+                if (g.getScoringReactions()[0] == (Main.testingMode ? 2 : 2) &&
+                        g.getScoringReactions()[1] == 0) {
 
                     //winner 1
 
@@ -293,13 +400,14 @@ public class Listener extends ListenerAdapter {
                     }
                 }
             }
+             */
 
-            if(g.getScoringReactions()[0] ==1 && g.getScoringReactions()[1] == 1){
+            if (g.getScoringReactions()[0] > 0 && g.getScoringReactions()[1] > 0) {
                 Main.getBot().getTextChannelById(Main.botChannelId).retrieveMessageById(event.getMessageId()).queue((message) -> {
                     g.getScoringReactions()[0] = 0;
                     g.getScoringReactions()[1] = 0;
                     message.reply("Scoring disagreement, try again").queue();
-                    message.clearReactions().queue();
+                    message.clearReactions().complete();
 
                     message.addReaction("\uD83C\uDD70️").queue();
                     message.addReaction("\uD83C\uDD71").queue();
@@ -307,7 +415,8 @@ public class Listener extends ListenerAdapter {
                     Utils.print("Error");
                 });
             }
-
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

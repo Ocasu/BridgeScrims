@@ -19,7 +19,6 @@ public class Game {
     private String scoringMessageId;
     private String announcementMessageId;
     private int[] scoringReactions = {0, 0};
-    private boolean[][] scoringReactions2 = {{false, false}, {false, false}};
 
     private boolean started;
     private boolean finished;
@@ -38,7 +37,8 @@ public class Game {
         this.player2 = player2;
         this.numberId = id;
     }
-    public Game(int id){
+
+    public Game(int id) {
         numberId = id;
     }
 
@@ -50,7 +50,7 @@ public class Game {
         return player2;
     }
 
-    public void start(VoiceChannel vc){
+    public void start(VoiceChannel vc) {
         this.gameVCId = vc;
         this.started = true;
     }
@@ -58,7 +58,7 @@ public class Game {
     public void forfeit(GuildVoiceLeaveEvent event) {
         boolean cont = false;
         for (int i = 0; i < 7; i++) {
-            if (Main.vcs[i] == event.getChannelLeft()) {
+            if (Main.vcs[i].getId().equals(event.getChannelLeft().getId())) {
                 cont = true;
                 break;
             }
@@ -105,8 +105,7 @@ public class Game {
                 }
                 //player 1 end
 
-            }
-            else if (this.getPlayer2().equals(event.getMember().getUser().getId())) {
+            } else if (this.getPlayer2().equals(event.getMember().getUser().getId())) {
                 //player 2
                 EmbedBuilder h = new EmbedBuilder();
                 h.setTitle("Winner is Player 2");
@@ -143,17 +142,16 @@ public class Game {
 
                 }
                 //player 2 end
-            }
-            else {
+            } else {
                 //some error
                 Utils.print("Error");
             }
         }
     }
 
-    public void forfeit(String playerId){
+    public void forfeit(String playerId) {
 
-        if(this.getPlayer2().equals(playerId)){
+        if (this.getPlayer2().equals(playerId)) {
             //player 1
 
             EmbedBuilder h = new EmbedBuilder();
@@ -193,8 +191,7 @@ public class Game {
             }
             //player 1 end
 
-        }
-        else if(this.getPlayer1().equals(playerId)){
+        } else if (this.getPlayer1().equals(playerId)) {
             //player 2
             EmbedBuilder h = new EmbedBuilder();
             h.setTitle("Winner is Player 2");
@@ -235,7 +232,7 @@ public class Game {
 
     }
 
-    public void react(int num){
+    public void react(int num) {
         scoringReactions[num]++;
     }
 
@@ -255,11 +252,11 @@ public class Game {
         this.scoringMessageId = scoringMessageId;
     }
 
-    public void addPlayer(Game g, int winner, int feeding){
+    public void addPlayer(Game g, int winner, int feeding) {
 
         System.out.println(this);
 
-        if(winner == 1){
+        if (winner == 1) {
             if (this.player1 == null) {
                 this.player1 = g.getPlayer1();
             } else {
@@ -270,7 +267,7 @@ public class Game {
                 Main.brackets.bulletTourney.getCurrentGames().put(this.player2, 4 + (feeding - 5));
 
             }
-        }else{
+        } else {
             if (this.player1 == null) {
                 this.player1 = g.getPlayer2();
             } else {
@@ -298,6 +295,7 @@ public class Game {
 
     /**
      * Sends message to channel for players confirm who won the given game
+     *
      * @param t botMain.Tournament object
      */
     public void score(Tournament t) {
@@ -305,11 +303,11 @@ public class Game {
         Utils.reaction(player1, player2, t, numberId);
     }
 
-    public void markDone(EmbedBuilder h, int winner){
+    public void markDone(EmbedBuilder h, int winner) {
         this.finished = true;
         this.announcementMessageId = Utils.print(h);
-        if(winner == 1) this.winner = this.player1;
-        else if(winner == 2) this.winner = this.player2;
+        if (winner == 1) this.winner = this.player1;
+        else if (winner == 2) this.winner = this.player2;
 
     }
 
@@ -324,10 +322,6 @@ public class Game {
     @Override
     public int hashCode() {
         return Objects.hash(numberId);
-    }
-
-    public boolean[][] getScoringReactions2() {
-        return scoringReactions2;
     }
 
     public String getWinner() {

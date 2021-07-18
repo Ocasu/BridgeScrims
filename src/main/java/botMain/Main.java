@@ -27,7 +27,7 @@ public class Main {
 
     public static void main(String[] args) throws LoginException, InterruptedException {
         bot = JDABuilder.createDefault(Secret.TutorialBotToken)
-                .setActivity(Activity.playing("Version -1.0.0"))
+                .setActivity(Activity.playing("Testing Mode"))
                 .addEventListeners(new Listener())
                 .build().awaitReady();
         guild = bot.getGuilds().get(0);

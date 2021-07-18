@@ -35,6 +35,10 @@ public class Utils {
         MessageAction ma = Objects.requireNonNull(Main.getBot().getTextChannelById(Main.botChannelId)).sendMessage(m);
         return ma.complete().getId();
     }
+    public static String print(String m, String channelId){
+        MessageAction ma = Objects.requireNonNull(Main.getBot().getTextChannelById(channelId)).sendMessage(m);
+        return ma.complete().getId();
+    }
     public static String print(EmbedBuilder b){
         MessageAction m = Objects.requireNonNull(Main.getBot().getTextChannelById(Main.botChannelId)).sendMessage(b.build());
         return m.complete().getId();

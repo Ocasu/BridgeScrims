@@ -3,10 +3,6 @@ package botMain;
 import java.util.HashMap;
 
 public class Tournament {
-//    botMain.Game[] quarterFinals = new botMain.Game[4];
-//    botMain.Game[] semiFinals = new botMain.Game[2];
-//    botMain.Game finalRound;
-//    botMain.Game finalRound = new botMain.Game();
     private final Game[] allGames = new Game[7];
 
     public Game[] getAllGames() {
