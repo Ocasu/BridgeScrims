@@ -100,15 +100,16 @@ public class Listener extends ListenerAdapter {
 
             if (message.startsWith("!score")) {
 
+                if (!Main.bracketInProgress) {
+                    Utils.print("A tournament is not in progress yet");
+                    return;
+                }
+
                 if (!inTourney(event.getAuthor())) {
                     Utils.print("You have to be in a tournament to use this command");
                     return;
                 }
 
-                if (!Main.bracketInProgress) {
-                    Utils.print("A tournament is not in progress yet");
-                    return;
-                }
 
                 int gameId = getTourney().getCurrentGames().get(event.getAuthor().getId());
                 if (getTourney().getGame(gameId).getScoringMessageId() == null) {
