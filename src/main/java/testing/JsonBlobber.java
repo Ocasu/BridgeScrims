@@ -1,15 +1,27 @@
 package testing;
 
+
+import org.json.JSONObject;
+
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Scanner;
 
 public class JsonBlobber {
-    public static void main(String[] args) {
+    public static String g = "de9f408a-e73a-11eb-9ebe-c75b0ae745f3";
+    public static void main(String[] args) throws IOException {
 
+//        Scanner scan = new Scanner(new File("src/main/java/testing/y.json"));
+//        String data = "";
+//        while(scan.hasNext()){
+//            data += scan.next();
+//        }
+//        put(g, data);
+        gameCtAdd(g);
     }
     public static void post() throws IOException {
         URL url = new URL("https://jsonblob.com/api/jsonBlob");
@@ -46,5 +58,24 @@ public class JsonBlobber {
 
         System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
         http.disconnect();
+    }
+    public static void gameCtAdd(String id) throws IOException {
+        put(g, ""+(Integer.parseInt(get(g, "gameCt"))+1));
+    }
+    public static void restartCtAdd(String id) throws IOException {
+        put(g, ""+(Integer.parseInt(get(g, "restartCt"))+1));
+    }
+    public static String get(String id, String field) throws IOException {
+        URL url = new URL("https://jsonblob.com/api/jsonBlob/" + id);
+        HttpURLConnection http = (HttpURLConnection) url.openConnection();
+        http.setRequestProperty("Authorization", "Bearer mt0dgHmLJMVQhvjpNXDyA83vA_PxH23Y");
+
+        System.out.println(http.getResponseCode() + " " + http.getResponseMessage());
+        System.out.println(http.getHeaderFields());
+        JSONObject j = new JSONObject(http.getContent());
+        http.disconnect();
+        System.out.println(j.toMap());
+        return j.getInt("gameCt") + "";
+
     }
 }

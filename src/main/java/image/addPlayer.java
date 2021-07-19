@@ -20,6 +20,12 @@ public class addPlayer {
     static int[] semiY3 = {270, 750};
     static int last = 510;
     static int[] xs = {68, 473, 873, 1423};
+
+//    static Color member = Color.WHITE;
+//    static Color prime = new Color(125, 170, 230);
+//    static Color privat = new Color(160, 160, 200);
+//    static Color premium = new Color(176, 125,244);
+
     public void add(String a, int gameId, Game g){
         if(g.getPlayer1() == null){
 
@@ -46,10 +52,8 @@ public class addPlayer {
         for(int i = 0 ;i<4;i++){
             String p1 = gs[i].getPlayer1();
             String p2 = gs[i].getPlayer2();
-            if(!Main.testingMode){
-                p1 = Main.getBot().getUserById(p1).getAsTag();
-                p2 = Main.getBot().getUserById(p1).getAsTag();
-            }
+            p1 = Main.getBot().getUserById(p1).getAsTag();
+            p2 = Main.getBot().getUserById(p2).getAsTag();
             p1 = p1.substring(0, Math.min(16, p1.length()));
             p2 = p2.substring(0, Math.min(16, p2.length()));
             draw(g, p1, xs[0], semiY[i*2]);
@@ -72,10 +76,8 @@ public class addPlayer {
                     p1 = p2;
                     p2 = temp;
                 }
-                if (!Main.testingMode) {
-                    p1 = Main.getBot().getUserById(p1).getAsTag();
-                    p2 = Main.getBot().getUserById(p1).getAsTag();
-                }
+                p1 = Main.getBot().getUserById(p1).getAsTag();
+                p2 = Main.getBot().getUserById(p2).getAsTag();
                 p1 = p1.substring(0, Math.min(16, p1.length()));
                 if(p2.length()!=0) p2 = p2.substring(0, Math.min(16, p2.length()));
                 draw(g, p1, xs[1], semiY2[i * 2]);
@@ -88,10 +90,8 @@ public class addPlayer {
             if(gs[6].getPlayer2() != null){
                 p2 = gs[6].getPlayer2();
             }
-            if (!Main.testingMode) {
-                p1 = Main.getBot().getUserById(p1).getAsTag();
-                p2 = Main.getBot().getUserById(p1).getAsTag();
-            }
+            p1 = Main.getBot().getUserById(p1).getAsTag();
+            p2 = Main.getBot().getUserById(p2).getAsTag();
             p1 = p1.substring(0, Math.min(16, p1.length()));
             if(p2.length() != 0) p2 = p2.substring(0, Math.min(16, p2.length()));
             draw(g, p1, xs[2], semiY3[0]);

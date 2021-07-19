@@ -14,13 +14,13 @@ public class Utils {
     public static void reaction(String player1, String player2, Tournament t, int numberId){
         EmbedBuilder b = new EmbedBuilder();
         b.setTitle("Select winner");
-        if(Main.testingMode){
-            b.addField(player1 + " won: ", ("\uD83C\uDD70️"), false);
-            b.addField(player2 + " won: ", ("\uD83C\uDD71️"), false);
-        }else{
+//        if(Main.testingMode){
+//            b.addField(player1 + " won: ", ("\uD83C\uDD70️"), false);
+//            b.addField(player2 + " won: ", ("\uD83C\uDD71️"), false);
+//        }else{
             b.addField(Main.getBot().getUserById(player1).getAsTag() + " won: ", ("\uD83C\uDD70️"), false);
             b.addField(Main.getBot().getUserById(player2).getAsTag() + " won: ", ("\uD83C\uDD71️"), false);
-        }
+//        }
         b.setColor(Color.PINK);
         MessageAction messageAction = Objects.requireNonNull(Main.getBot().getTextChannelById(Main.botChannelId)).sendMessage(b.build());
         Message m = messageAction.complete();

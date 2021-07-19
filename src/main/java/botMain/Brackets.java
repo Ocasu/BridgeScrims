@@ -87,16 +87,25 @@ public class Brackets {
 
                     b.addField("Game :" + nums[(i + 1)] + ":", one.getAsTag() + " :vs: " + two.getAsTag(), false);
                 } else {
-                    b.addField("Game :" + nums[(i + 1)] + ":", bulletTourney.getGame(i).getPlayer1() + " :vs: " + bulletTourney.getGame(i).getPlayer2(), false);
+                    if(one != null && two != null){
+
+                        b.addField("Game :" + nums[(i + 1)] + ":", one.getAsTag() + " :vs: " + two.getAsTag(), false);
+                    }else{
+                        b.addField("Game :" + nums[(i + 1)] + ":", bulletTourney.getGame(i).getPlayer1() + " :vs: " + bulletTourney.getGame(i).getPlayer2(), false);
+
+                    }
                 }
 
 
             }
 //            b.setColor(Color.PINK);
             Utils.print(b);
+            image.addPlayer.reload();
+            sendBracketsUpdate.update();
         }catch(Exception e){
             e.printStackTrace();
         }
+
 
 
     }
