@@ -28,7 +28,15 @@ public class Listener extends ListenerAdapter {
     }
 
     private boolean isAdmin(Member member) {
-        return member.getRoles().contains(Main.getBot().getRoleById("866903330671820810"));
+        String[] admins = {"760148398857912380", "759949547882545154", "834247683484024893"};
+        boolean g = false;
+        for(String y : admins){
+            if(member.getRoles().contains(Main.getBot().getRoleById(y))){
+                g = true;
+                break;
+            }
+        }
+        return g;
     }
 
     private boolean inTourney(User user) {
