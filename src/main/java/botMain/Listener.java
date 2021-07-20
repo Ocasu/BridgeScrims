@@ -20,7 +20,7 @@ import java.util.List;
 
 public class Listener extends ListenerAdapter {
 
-    public Set<String> voiceChannelContains = new HashSet<>();
+    public static Set<String> voiceChannelContains = new HashSet<>();
 
     @Override
     public void onReady(@Nonnull ReadyEvent event) {
@@ -217,6 +217,9 @@ public class Listener extends ListenerAdapter {
     @Override
     public void onGuildMessageReactionRemove(@NotNull GuildMessageReactionRemoveEvent event) {
         super.onGuildMessageReactionRemove(event);
+        if(!event.getChannel().getId().equals(Main.botChannelId + "")){
+            return;
+        }
         if (getTourney().getCurrentScoringMessageIds().containsKey(event.getMessageId())) {
 
             Game g = getTourney().getGame(getTourney().getCurrentGames().get(event.getUserId()));
@@ -239,6 +242,9 @@ public class Listener extends ListenerAdapter {
         super.onGuildMessageReactionAdd(event);
 
         try {
+            if(!event.getChannel().getId().equals(Main.botChannelId + "")){
+                return;
+            }
 
             if (!event.getReactionEmote().isEmoji()
                     || !getTourney().getCurrentScoringMessageIds().containsKey(event.getMessageId())
@@ -270,7 +276,9 @@ public class Listener extends ListenerAdapter {
             String otherPlayer = playerIndex == 0 ? g.getPlayer2() : g.getPlayer1();
 
             g.react(playerIndex);
-            Utils.print("A player of this bracket claims player " + playerDisplay + " has won");
+            if(playerDisplay.equals("1")) Utils.print("A player of this bracket claims player " + Main.getBot().getUserById(g.getPlayer1()) + " has won");
+            if(playerDisplay.equals("2")) Utils.print("A player of this bracket claims player " + Main.getBot().getUserById(g.getPlayer2()) + " has won");
+
             System.out.println(Arrays.toString(g.getScoringReactions()));
 
             if (g.getScoringReactions()[playerIndex] == (Main.testingMode ? 2 : 2) &&
@@ -289,6 +297,8 @@ public class Listener extends ListenerAdapter {
                 if (g.getNumberId() == 6) { //is it game final
                     EmbedBuilder hh = new EmbedBuilder();
                     hh.setTitle("Winner is Player " + playerDisplay + "!");
+                    if(playerDisplay.equals("1")) hh.setTitle("Winner is Player " + Main.getBot().getUserById(g.getPlayer1()) + "!");
+                    if(playerDisplay.equals("2")) hh.setTitle("Winner is Player " + Main.getBot().getUserById(g.getPlayer2()) + "!");
                     getTourney().setWinner(winnerPlayer);
                     hh.setColor(Color.PINK);
                     getTourney().setDone();

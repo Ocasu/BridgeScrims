@@ -1,6 +1,7 @@
 package botMain;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Tournament {
     private final Game[] allGames = new Game[7];
@@ -37,6 +38,9 @@ public class Tournament {
     }
 
     public void setDone(){
+        Main.bracketInProgress = false;
+        Main.brackets = new Brackets(Main.getBot(), Main.getBot().getVoiceChannelById(Main.voiceChannelId));
+        Listener.voiceChannelContains = new HashSet<>();
         this.done = true;
     }
 

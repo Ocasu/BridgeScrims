@@ -102,6 +102,12 @@ public class addPlayer {
             if(gs[6].getPlayer2() != null){
                 p2 = gs[6].getPlayer2();
             }
+            assert gs[4] != null;
+            if(gs[4].getWinner() != null && gs[5].getWinner().equals(p1)){
+                String temp = p1;
+                p1 = p2;
+                p2 = temp;
+            }
             User a = Main.getBot().getUserById(p1);
             User b = Main.getBot().getUserById(p2);
             p1 = a.getName();

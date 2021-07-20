@@ -4,15 +4,10 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
-import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.VoiceChannel;
 import net.dv8tion.jda.api.requests.GatewayIntent;
-import net.dv8tion.jda.api.utils.ChunkingFilter;
-import net.dv8tion.jda.api.utils.MemberCachePolicy;
-import net.dv8tion.jda.api.utils.concurrent.Task;
 
 import javax.security.auth.login.LoginException;
-import java.util.List;
 
 public class Main {
     private static JDA bot;
@@ -22,27 +17,36 @@ public class Main {
 
     public static boolean testingMode = true;
 
-    public static final String voiceChannelId =      "845373357096566822";
-    public static final String botChannelId =        "847491106442706994";
-    public static final String botChannelResultId =  "863540090281787412";
-    public static final String botChannelScoringId = "863540054769401906";
-    public static final String botChannelImageId =   "864661994690314280";
+    public static final String voiceChannelId =      "866899403821678632";
+    public static final String botChannelId =        "866899299090169856";
+    public static final String botChannelImageId =   "866899483598389268";
+
+//    public static final String voiceChannelId =      "845373357096566822";
+//    public static final String botChannelId =        "847491106442706994";
+//    public static final String botChannelResultId =  "863540090281787412";
+//    public static final String botChannelScoringId = "863540054769401906";
+//    public static final String botChannelImageId =   "864661994690314280";
 
     public static final VoiceChannel[] vcs = new VoiceChannel[7];
 
 
     public static void main(String[] args) throws LoginException, InterruptedException {
-        bot = JDABuilder.createDefault(Secret.TutorialBotToken)
+        bot = JDABuilder.createDefault(Secret.TutorialBotToken,
+                GatewayIntent.GUILD_MEMBERS,
+                GatewayIntent.GUILD_MESSAGES,
+                GatewayIntent.GUILD_MESSAGE_REACTIONS,
+                GatewayIntent.GUILD_EMOJIS
+                )
                 .setActivity(Activity.playing("Testing Mode"))
                 .addEventListeners(new Listener())
 //                .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
-                .setMemberCachePolicy(MemberCachePolicy.ALL) // ignored if chunking enabled
-                .enableIntents(GatewayIntent.GUILD_MEMBERS)
+//                .setMemberCachePolicy(MemberCachePolicy.ALL) // ignored if chunking enabled
+//                .enableIntents(GatewayIntent.GUILD_MEMBERS)
                 .build().awaitReady();
         guild = bot.getGuilds().get(0);
 //        guild.loadMembers();
-        Task<List<Member>> load = guild.loadMembers();
-        System.out.println(load.get());
+//        Task<List<Member>> load = guild.loadMembers();
+//        System.out.println(load.get());
 
         for (int i = 0; i < 7; i++) {
             if (i < 6) vcs[i] = bot.getVoiceChannelsByName("Game " + (i + 1), true).get(0);
