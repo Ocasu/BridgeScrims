@@ -37,7 +37,7 @@ public class Main {
                 GatewayIntent.GUILD_MESSAGE_REACTIONS,
                 GatewayIntent.GUILD_EMOJIS
                 )
-                .setActivity(Activity.playing("Testing Mode"))
+                .setActivity(Activity.playing("testToggled"))
                 .addEventListeners(new Listener())
 //                .setChunkingFilter(ChunkingFilter.ALL) // enable member chunking for all guilds
 //                .setMemberCachePolicy(MemberCachePolicy.ALL) // ignored if chunking enabled
