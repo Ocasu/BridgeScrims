@@ -55,7 +55,7 @@ public class Game {
         this.started = true;
     }
 
-    public void forfeit(GuildVoiceLeaveEvent event) {
+    public void forfeit(GuildVoiceLeaveEvent event) throws IOException {
         boolean cont = false;
         for (int i = 0; i < 7; i++) {
             if (Main.vcs[i].getId().equals(event.getChannelLeft().getId())) {
