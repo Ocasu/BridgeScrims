@@ -294,6 +294,8 @@ public class Listener extends ListenerAdapter {
                     getTourney().setDone();
                     Main.bracketInProgress = false;
                     Utils.print(hh);
+                    addPlayer.reload();
+                    sendBracketsUpdate.update();
                 } else {
                     int feeding = Main.brackets.feeding.get(g.getNumberId() + 1);
 

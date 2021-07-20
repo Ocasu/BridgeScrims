@@ -43,6 +43,7 @@ public class addPlayer {
 
 
     public static void reload() throws IOException {
+
         Font font = new Font("Minecraft", Font.PLAIN, 40);
         File h = new File("src/main/java/image/bbracketrevamp22.png");
         File h2 = new File("src/main/java/image/bbracketrevamp2.png");
@@ -87,8 +88,8 @@ public class addPlayer {
                 }
                 User a = Main.getBot().getUserById(p1);
                 User b = Main.getBot().getUserById(p2);
-                p1 = a.getAsTag();
-                p2 = b.getAsTag();
+                p1 = a.getName();
+                p2 = b.getName();
                 p1 = p1.substring(0, Math.min(16, p1.length()));
                 if(p2.length()!=0) p2 = p2.substring(0, Math.min(16, p2.length()));
                 draw(g, p1, xs[1], semiY2[i * 2], a);

@@ -65,7 +65,7 @@ public class Game {
         }
         if (cont) {
             //check which player
-            if (this.getPlayer1().equals(event.getMember().getUser().getId())) {
+            if (this.getPlayer2().equals(event.getMember().getUser().getId())) {
                 //player 1
 
                 EmbedBuilder h = new EmbedBuilder();
@@ -105,7 +105,7 @@ public class Game {
                 }
                 //player 1 end
 
-            } else if (this.getPlayer2().equals(event.getMember().getUser().getId())) {
+            } else if (this.getPlayer1().equals(event.getMember().getUser().getId())) {
                 //player 2
                 EmbedBuilder h = new EmbedBuilder();
                 h.setTitle("Winner is Player 2");
@@ -118,13 +118,16 @@ public class Game {
                 Main.brackets.bulletTourney.getCurrentGames().remove(this.getPlayer2());
                 if (this.getNumberId() == 6) {
                     EmbedBuilder hh = new EmbedBuilder();
-                    hh.setTitle("Winner is Player 2!");
+                    hh.setTitle("TOUNREY winner is Player 2!");
                     hh.setFooter("Due to player 1 forfeit");
                     Main.brackets.bulletTourney.setWinner(this.getPlayer2());
                     Main.brackets.bulletTourney.setDone();
                     Main.bracketInProgress = false;
                     hh.setColor(Color.PINK);
                     Utils.print(hh);
+                    addPlayer.reload();
+                    sendBracketsUpdate.update();
+
                 } else {
                     int feeding = Main.brackets.feeding.get(this.getNumberId() + 1);
 
