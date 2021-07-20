@@ -28,7 +28,7 @@ public class Listener extends ListenerAdapter {
     }
 
     private boolean isAdmin(Member member) {
-        return member.getRoles().contains(Main.getBot().getRoleById("862151580303884308"));
+        return member.getRoles().contains(Main.getBot().getRoleById("866903330671820810"));
     }
 
     private boolean inTourney(User user) {
