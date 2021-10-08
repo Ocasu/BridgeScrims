@@ -82,7 +82,7 @@ public class Listener extends ListenerAdapter {
 
                 VoiceChannel g = Main.getBot().getVoiceChannelById(Main.voiceChannelId);
                 List<Member> gg = g.getMembers();
-                Utils.print(String.join(gg, ""));
+                Utils.print(gg.size() + "");
                 for (Member h : gg) voiceChannelContains.add(h.getId());
 
                 if (!voiceChannelContains.contains(author.getId())) {
