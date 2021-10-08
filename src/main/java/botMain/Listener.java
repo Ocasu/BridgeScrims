@@ -28,7 +28,7 @@ public class Listener extends ListenerAdapter {
     }
 
     private boolean isAdmin(Member member) {
-        String[] admins = {"760148398857912380", "759949547882545154", "834247683484024893"};
+        String[] admins = {"760148398857912380", "759949547882545154", "834247683484024893", "866875636437745684"};
         boolean g = false;
         for(String y : admins){
             if(member.getRoles().contains(Main.getBot().getRoleById(y))){
